@@ -21,7 +21,6 @@ void setup() {
     auto cfg = M5.config();
     
     // Enable external button (Button C on GPIO35)
-    cfg.external_spk = false;  // Disable speaker to free up GPIO
     
     M5.begin(cfg); // Initializes display, buttons, and power management (GPIO4)
 
@@ -123,7 +122,7 @@ void loop() {
     }
     
     // Button C - Scroll command right
-    if (M5.BtnC.wasPressed()) {
+    if (M5.BtnPWR.wasPressed()) {
         // Reset sleep timer on button press
         resetSleepTimer();
         scrollCommandRight();

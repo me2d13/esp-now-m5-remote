@@ -15,9 +15,12 @@ void initSleepManager() {
     // Initialize the sleep timer
     lastActivityTime = millis();
     
-    // Configure wake-up source - wake on button A press
-    // M5StickC PLUS2 Button A is on GPIO37
-    esp_sleep_enable_ext0_wakeup(GPIO_NUM_37, LOW);  // Wake when button is pressed (LOW)
+    // Configure wake-up source - wake on button C/PWR press (GPIO35)
+    // M5StickC PLUS2 Button C is the power button, most intuitive for wake-up
+    // Note: ext1 with ESP_EXT1_WAKEUP_ALL_LOW requires ALL pins to be LOW simultaneously
+    // ext1 doesn't support "ANY_LOW", only "ANY_HIGH" or "ALL_LOW"
+    // Since buttons pull pins LOW when pressed, we use ext0 for single button wake
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_35, LOW);  // Wake when PWR button is pressed (LOW)
     
     // Reset last indicator width
     lastIndicatorWidth = -1;

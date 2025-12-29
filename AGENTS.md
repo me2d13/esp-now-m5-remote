@@ -14,7 +14,7 @@ This is a PlatformIO project for the **M5StickC PLUS2** device, creating a remot
 - **Buttons**:
   - Button A (GPIO37): Front button - sends MQTT commands
   - Button B (GPIO39): Side button - short press scrolls left, long press (1s) switches modes
-  - Button C (GPIO35): External button connector - scroll right (currently not working, needs physical button)
+  - Button C (GPIO35): Power button (M5.BtnPWR) - scroll right, also wakes from deep sleep
 
 ## PlatformIO Configuration
 - **Platform**: espressif32
@@ -60,7 +60,7 @@ pio device monitor
 - Auto deep sleep after configurable timeout (60 seconds in config.h)
 - Visual countdown: cyan line at **bottom of display** shrinks from right to left
 - Optimized drawing: only updates changed pixels to avoid flickering
-- Wake source: Button A (GPIO37)
+- Wake source: Button C/PWR (GPIO35) - the power button
 - Resets timer on any button press
 
 #### 3. **State Manager** (`state_manager.h/cpp`)
@@ -172,9 +172,11 @@ All colors use explicit RGB565 values to avoid library conflicts:
 - **Side effect**: Resets sleep timer
 - **Implementation**: Manual timing check (not using M5.BtnB.pressedFor() for short press)
 
-### Button C (External GPIO35)
+### Button C (Power Button - M5.BtnPWR)
 - **Action**: Scroll command right (select next)
-- **Status**: Currently not working - requires physical button on external connector
+- **GPIO**: GPIO35
+- **Wake-up**: **Only button that can wake device from deep sleep**
+- **Note**: ESP32 ext1 wake doesn't support "ANY_LOW", only "ALL_LOW" or "ANY_HIGH", so only one button can be configured for wake-up
 - **Side effect**: Resets sleep timer
 
 ## Important Implementation Notes
@@ -196,7 +198,6 @@ All colors use explicit RGB565 values to avoid library conflicts:
 ## Current Limitations & TODOs
 
 ### Known Issues
-- **Button C not working**: Requires physical button on external GPIO35 connector
 - **ESP-NOW mode**: Not yet implemented, only UI framework exists
 
 ### Future Enhancements
@@ -205,7 +206,6 @@ All colors use explicit RGB565 values to avoid library conflicts:
 - Add visual feedback for MQTT publish success/failure
 - Implement battery refresh (currently only updates on startup)
 - Add retry logic for failed MQTT connections
-- Consider alternative button mapping if external button not available
 
 ## Testing & Debugging
 
